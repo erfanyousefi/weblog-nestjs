@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { Blog } from "./blog.entity";
 import { BlogService } from "./blog.service";
 import { CreateBlogDTO } from "./dto/create-blog.dto";
@@ -9,7 +10,8 @@ import { UpdateBlogDTO } from "./dto/update-blog.dto";
 export class BlogController {
     constructor(private readonly blogService: BlogService) { }
     @Get()
-    public getAllBlogs(): Promise<Blog[]> {
+    @UseGuards(AuthGuard())
+    public getAllBlogs(@Req() req): Promise<Blog[]> {
         const blogs = this.blogService.getAllBlogs();
         return blogs;
     }
@@ -30,8 +32,7 @@ export class BlogController {
     @Patch(':id')
     public async updateBlog(@Param() blogID: BlogIdDTO, @Body() updateBlogDto: UpdateBlogDTO): Promise<Blog> {
         const blog = await this.getBlogById(blogID)
-        console.log(updateBlogDto);
         return this.blogService.updateBlog(blog.id, updateBlogDto)
-        
+
     }
 }

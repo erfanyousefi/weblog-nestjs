@@ -13,6 +13,7 @@ export class BlogRepository extends Repository<Blog> {
     }
     async updateBlog(id, updateBlogDto : UpdateBlogDTO) : Promise<Blog>{
         await this.update(id, {...updateBlogDto})
+        
         return this.findOne(id)
     }
 }
