@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { User } from "src/auth/user.entity";
 import { Blog } from "./blog.entity";
 import { BlogService } from "./blog.service";
 import { CreateBlogDTO } from "./dto/create-blog.dto";
@@ -12,7 +13,8 @@ export class BlogController {
     @Get()
     @UseGuards(AuthGuard())
     public getAllBlogs(@Req() req): Promise<Blog[]> {
-        const blogs = this.blogService.getAllBlogs();
+        const user = req.user
+        const blogs = this.blogService.getAllBlogs(user);
         return blogs;
     }
     @Get(":id")
@@ -21,8 +23,10 @@ export class BlogController {
         return this.blogService.getBlogById(id)
     }
     @Post()
-    public createBlog(@Body() createBlogDto: CreateBlogDTO): Promise<Blog> {
-        return this.blogService.createBlog(createBlogDto)
+    @UseGuards(AuthGuard())
+    public createBlog(@Body() createBlogDto: CreateBlogDTO, @Req() req): Promise<Blog> {
+        const user = req.user
+        return this.blogService.createBlog(createBlogDto, user)
     }
     @Delete(":id")
     public deleteBlogById(@Param() blogIdDto: BlogIdDTO): Promise<Blog> {

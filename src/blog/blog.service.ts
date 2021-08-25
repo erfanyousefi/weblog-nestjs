@@ -4,11 +4,12 @@ import { BlogRepository } from "./blog.repository";
 import { InjectRepository } from "@nestjs/typeorm"
 import { CreateBlogDTO } from "./dto/create-blog.dto";
 import { UpdateBlogDTO } from "./dto/update-blog.dto";
+import { User } from "src/auth/user.entity";
 @Injectable()
 export class BlogService {
     constructor(@InjectRepository(BlogRepository) private readonly blogRepository: BlogRepository) { }
-    public async getAllBlogs(): Promise<Blog[]> {
-        const blogs = await this.blogRepository.find({});
+    public async getAllBlogs(user): Promise<Blog[]> {
+        const blogs = await this.blogRepository.find({user})
         return blogs
     }
     public async getBlogById(id: string): Promise<Blog> {
@@ -16,8 +17,8 @@ export class BlogService {
         if (!blog) throw new NotFoundException(`Not Found Blog with id : ${id}`)
         return blog;
     }
-    public async createBlog(createBlogDto: CreateBlogDTO): Promise<Blog> {
-        const blog = this.blogRepository.createBlog(createBlogDto);
+    public async createBlog(createBlogDto: CreateBlogDTO, user: User): Promise<Blog> {
+        const blog = this.blogRepository.createBlog(createBlogDto, user);
         return blog
     }
     public async deleteBlogById(id): Promise<Blog> {
