@@ -1,7 +1,7 @@
 import { Exclude } from "class-transformer";
-import { Timestamp } from "rxjs";
 import { User } from "src/auth/user.entity";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm"
+import { Comment } from "src/comment/comment.entity";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm"
 
 @Entity({ name: "blog" })
 export class Blog {
@@ -20,4 +20,6 @@ export class Blog {
     @ManyToOne(_type => User, user => user.blogs, {eager : false})
     @Exclude({toPlainOnly : true})
     user: User
+    @OneToMany(_type => Comment, comment => comment.blog, {eager : true})
+    comments: Comment[]
 }

@@ -1,4 +1,5 @@
 import { Blog } from "src/blog/blog.entity";
+import { Comment } from "src/comment/comment.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('users')
@@ -19,4 +20,6 @@ export class User {
     token: string
     @OneToMany((_type) => Blog, blog => blog.user, { eager: true })
     blogs: Blog[]
+    @OneToMany((_type) => Comment, comment => comment.user, { eager: true })
+    comments: Comment[]
 }

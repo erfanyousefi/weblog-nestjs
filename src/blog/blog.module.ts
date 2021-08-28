@@ -8,5 +8,6 @@ import { AuthModule } from "src/auth/auth.module";
     imports : [TypeOrmModule.forFeature([BlogRepository]), AuthModule],
     controllers : [BlogController],
     providers : [BlogService],
+    exports : [BlogService]
 })
 export class BlogModule{}

@@ -8,35 +8,37 @@ import { BlogIdDTO } from "./dto/id-blog.dto";
 import { UpdateBlogDTO } from "./dto/update-blog.dto";
 
 @Controller('blogs')
+@UseGuards(AuthGuard())
 export class BlogController {
     constructor(private readonly blogService: BlogService) { }
     @Get()
-    @UseGuards(AuthGuard())
     public getAllBlogs(@Req() req): Promise<Blog[]> {
         const user = req.user
         const blogs = this.blogService.getAllBlogs(user);
         return blogs;
     }
     @Get(":id")
-    public getBlogById(@Param() blogIdDto: BlogIdDTO): Promise<Blog> {
+    public getBlogById(@Param() blogIdDto: BlogIdDTO, @Req() req): Promise<Blog> {
+        const user = req.user
         let { id } = blogIdDto;
-        return this.blogService.getBlogById(id)
+        return this.blogService.getBlogById(id, user)
     }
     @Post()
-    @UseGuards(AuthGuard())
     public createBlog(@Body() createBlogDto: CreateBlogDTO, @Req() req): Promise<Blog> {
         const user = req.user
         return this.blogService.createBlog(createBlogDto, user)
     }
     @Delete(":id")
-    public deleteBlogById(@Param() blogIdDto: BlogIdDTO): Promise<Blog> {
+    public deleteBlogById(@Param() blogIdDto: BlogIdDTO, @Req() req): Promise<Blog> {
+        const user = req.user
         let { id } = blogIdDto;
-        return this.blogService.deleteBlogById(id)
+        return this.blogService.deleteBlogById(id, user)
     }
     @Patch(':id')
-    public async updateBlog(@Param() blogID: BlogIdDTO, @Body() updateBlogDto: UpdateBlogDTO): Promise<Blog> {
-        const blog = await this.getBlogById(blogID)
-        return this.blogService.updateBlog(blog.id, updateBlogDto)
-
+    public async updateBlog(@Param() blogID: BlogIdDTO, @Body() updateBlogDto: UpdateBlogDTO, @Req() req): Promise<Blog> {
+        const user = req.user
+        const { id } = blogID
+        const blog = await this.blogService.getBlogById(id, user)
+        return this.blogService.updateBlog(blog.id, updateBlogDto, user)
     }
 }

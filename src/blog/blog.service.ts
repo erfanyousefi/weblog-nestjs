@@ -9,11 +9,11 @@ import { User } from "src/auth/user.entity";
 export class BlogService {
     constructor(@InjectRepository(BlogRepository) private readonly blogRepository: BlogRepository) { }
     public async getAllBlogs(user): Promise<Blog[]> {
-        const blogs = await this.blogRepository.find({user})
+        const blogs = await this.blogRepository.find({ where: { user } })
         return blogs
     }
-    public async getBlogById(id: string): Promise<Blog> {
-        const blog = await this.blogRepository.findOne(id);
+    public async getBlogById(id: string, user): Promise<Blog> {
+        const blog = await this.blogRepository.findOne({ where: { id, user } });
         if (!blog) throw new NotFoundException(`Not Found Blog with id : ${id}`)
         return blog;
     }
@@ -21,12 +21,12 @@ export class BlogService {
         const blog = this.blogRepository.createBlog(createBlogDto, user);
         return blog
     }
-    public async deleteBlogById(id): Promise<Blog> {
-        const blog = await this.getBlogById(id);
-        await this.blogRepository.delete(blog.id)
+    public async deleteBlogById(id, user: User): Promise<Blog> {
+        const blog = await this.getBlogById(id, user);
+        await this.blogRepository.remove(blog);
         return blog;
     }
-    public async updateBlog(id, updateBlogDto: UpdateBlogDTO): Promise<Blog> {
-        return this.blogRepository.updateBlog(id, updateBlogDto);
+    public async updateBlog(id, updateBlogDto: UpdateBlogDTO, user : User): Promise<Blog> {
+        return this.blogRepository.updateBlog(id, updateBlogDto, user);
     }
 }
