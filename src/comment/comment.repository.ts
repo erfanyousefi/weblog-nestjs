@@ -17,8 +17,8 @@ export class CommentRepository extends Repository<Comment> {
 
         return result;
     }
-    async ConfirmationComment(blogId): Promise<Comment> {
-        const {id} = blogId
+    async ConfirmationComment(commentId): Promise<Comment> {
+        const {id} = commentId
         const comment = await this.findOne({id});
         comment.flag = true;
         const response = await this.save(comment)

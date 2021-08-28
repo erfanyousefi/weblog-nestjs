@@ -5,6 +5,7 @@ import { BlogIdDTO } from "src/blog/dto/id-blog.dto";
 import { Comment } from "./comment.entity";
 import { CommentRepository } from "./comment.repository";
 import { CreateCommentDTO } from "./dto/create-comment.dto";
+import { GetIdDTO } from "./dto/get-id.dto";
 
 @Injectable()
 export class CommentService {
@@ -22,8 +23,15 @@ export class CommentService {
         const comment = await this.commentRepository.createComment(createCommentDto, user, blog);
         return comment
     }
-    async ConfirmationComment(blogId : BlogIdDTO) {
-        return await this.commentRepository.ConfirmationComment(blogId)
+    async ConfirmationComment(commentId: GetIdDTO) {
+        return await this.commentRepository.ConfirmationComment(commentId)
+    }
+    async DeleteCommentByID(commentId: GetIdDTO, user: User) {
+        const { id } = commentId;
+        const comment = await this.commentRepository.findOne({ id, user })
+        if(!comment) throw new NotFoundException()
+        await this.commentRepository.remove(comment)
+        return comment
     }
 
 }

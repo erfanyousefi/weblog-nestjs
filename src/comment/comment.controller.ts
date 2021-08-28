@@ -1,7 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { IsUUID } from "class-validator";
-import { Blog } from "src/blog/blog.entity";
 import { BlogService } from "src/blog/blog.service";
 import { BlogIdDTO } from "src/blog/dto/id-blog.dto";
 import { Comment } from "./comment.entity";
@@ -35,7 +33,8 @@ export class CommentController {
         return this.commentService.ConfirmationComment(blogID)
     }
     @Delete(":id")
-    DeleteComment(@Param() blogId : BlogIdDTO){
-
+    DeleteComment(@Param() commentId : GetIdDTO, @Req() req){
+        const user = req.user;
+        return this.commentService.DeleteCommentByID(commentId, user)
     }
 }
