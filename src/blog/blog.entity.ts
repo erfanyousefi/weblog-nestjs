@@ -20,6 +20,7 @@ export class Blog {
     @ManyToOne(_type => User, user => user.blogs, {eager : false})
     @Exclude({toPlainOnly : true})
     user: User
+    
     @OneToMany(_type => Comment, comment => comment.blog, {eager : true})
     comments: Comment[]
 }

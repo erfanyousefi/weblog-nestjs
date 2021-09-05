@@ -7,7 +7,7 @@ import { CommentService } from "./comment.service";
 import { CreateCommentDTO } from "./dto/create-comment.dto";
 import { GetIdDTO } from "./dto/get-id.dto";
 
-@Controller('comments')
+@Controller('/panel/comments')
 @UseGuards(AuthGuard())
 export class CommentController {
     constructor(
@@ -29,8 +29,8 @@ export class CommentController {
         return this.commentService.findCommentByID(id)
     }
     @Patch(':id')
-    ConfirmationComment(@Param() blogID: BlogIdDTO): Promise<Comment> {
-        return this.commentService.ConfirmationComment(blogID)
+    ConfirmationComment(@Param() commentId: GetIdDTO): Promise<Comment> {
+        return this.commentService.ConfirmationComment(commentId)
     }
     @Delete(":id")
     DeleteComment(@Param() commentId : GetIdDTO, @Req() req){

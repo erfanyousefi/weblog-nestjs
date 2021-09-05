@@ -1,16 +1,18 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { User } from "src/auth/user.entity";
+import { CommentService } from "src/comment/comment.service";
 import { Blog } from "./blog.entity";
 import { BlogService } from "./blog.service";
 import { CreateBlogDTO } from "./dto/create-blog.dto";
 import { BlogIdDTO } from "./dto/id-blog.dto";
 import { UpdateBlogDTO } from "./dto/update-blog.dto";
 
-@Controller('blogs')
+@Controller('panel/blogs')
 @UseGuards(AuthGuard())
 export class BlogController {
-    constructor(private readonly blogService: BlogService) { }
+    constructor(
+        private readonly blogService: BlogService,
+        private readonly commentService: CommentService) { }
     @Get()
     public getAllBlogs(@Req() req): Promise<Blog[]> {
         const user = req.user
